@@ -14,3 +14,10 @@ build/
 
 # Logs
 npm-debug.log*
+
+node_modules/
+.env
+.DS_Store
+dist/
+build/
+*.log

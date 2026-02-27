@@ -8,7 +8,7 @@ const generateToken = (user) => {
 };
 
 //Register new user
-export const register = async (req, res) => {
+export const register = async (req, res, next) => {
     try {
         const {email, password, name} = req.body;
         //Basic validation
@@ -33,7 +33,7 @@ export const register = async (req, res) => {
             measurement_unit: 'metric'
         });
 
-        const token = generateToken(newUser);
+        const token = generateToken(user);
         res.status(201).json({success: true, message: 'User registered successfully', data: {user: {id: user.id, email: user.email, name: user.name}, token}});
         
     }
@@ -86,21 +86,22 @@ export const getCurrentUser = async (req, res, next) => {
 };
 
 
-//Request password reset (for simplicity, we will just return a success message. In a real application, you would send an email with a reset link)
+//Request password reset
 export const requestPasswordReset = async (req, res, next) => {
     try {
-        const {email} = req.body;
+        const {email, newPassword} = req.body;
 
-        if (!email) {
-            return res.status(400).json({success: false, message: 'Email is required'});
+        if (!email || !newPassword) {
+            return res.status(400).json({success: false, message: 'Email and new password are required'});
         }
         const user = await User.findByEmail(email);
 
         if (!user) {
             return res.status(404).json({success: false, message: 'User not found'});
         }
-        //In a real application, generate a reset token and send an email with the reset link
-        res.json({success: true, message: 'Password reset requested. Please check your email for further instructions.'});
+        //Update user password
+        await User.updatePassword(user.id, newPassword);
+        res.json({success: true, message: 'Password reset successfully.'});
     }
     catch (err) {
         next(err);

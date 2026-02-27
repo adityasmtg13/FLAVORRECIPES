@@ -33,6 +33,22 @@ class UserPreference {
             [userId]
         );
     }
+
+    //Upsert user preferences
+    static async upsert(userId) {
+        const result = await db.query(
+        `
+        INSERT INTO user_preferences (user_id)
+        VALUES ($1)
+        ON CONFLICT (user_id)
+        DO UPDATE SET user_id = EXCLUDED.user_id
+        RETURNING *
+        `,
+        [userId]
+        );
+
+    return result.rows[0];
+    }
 }
 
 export default UserPreference;
