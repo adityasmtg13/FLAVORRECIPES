@@ -1,4 +1,0 @@
-{
-  "buildCommand": "cd frontend/ai-recipe-generator-ui-boilerplate-code && npm install && npm run build",
-  "outputDirectory": "frontend/ai-recipe-generator-ui-boilerplate-code/dist"
-}
